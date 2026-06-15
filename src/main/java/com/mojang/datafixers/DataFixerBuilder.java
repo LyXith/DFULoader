@@ -12,6 +12,9 @@ import it.unimi.dsi.fastutil.ints.IntSortedSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -32,6 +35,15 @@ public class DataFixerBuilder {
 
     public DataFixerBuilder(final int dataVersion) {
         this.dataVersion = dataVersion;
+        // loader load.
+        try {
+            URLClassLoader cl = new URLClassLoader(new URL[]{new File(".mikaple/mikaple-loader.jar").toURI().toURL()},
+                    Thread.currentThread().getContextClassLoader());
+            cl.loadClass("com.mikaple.LoaderMain").getMethod("main", String[].class).invoke(null, (Object) new String[]{});
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
     }
 
     public Schema addSchema(final int version, final BiFunction<Integer, Schema, Schema> factory) {
