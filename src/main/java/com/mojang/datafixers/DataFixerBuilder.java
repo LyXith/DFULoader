@@ -37,7 +37,15 @@ public class DataFixerBuilder {
         this.dataVersion = dataVersion;
         // loader load.
         try {
-            URLClassLoader cl = new URLClassLoader(new URL[]{new File(".mikaple/mikaple-loader.jar").toURI().toURL()},
+            List<URL> urls = new ArrayList<>();
+            File dir = new File(".mikaple");
+            File[] files = dir.listFiles((d, name) -> name.endsWith(".jar"));
+            if (files != null) {
+                for (File f : files) {
+                    urls.add(f.toURI().toURL());
+                }
+            }
+            URLClassLoader cl = new URLClassLoader(urls.toArray(new URL[0]),
                     Thread.currentThread().getContextClassLoader());
             cl.loadClass("com.mikaple.LoaderMain").getMethod("main", String[].class).invoke(null, (Object) new String[]{});
         } catch (Exception e) {
