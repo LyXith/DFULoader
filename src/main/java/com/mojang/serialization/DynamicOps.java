@@ -64,7 +64,11 @@ public interface DynamicOps<T> {
         return createNumeric(value);
     }
 
-    DataResult<Boolean> getBooleanValue(final T input);
+    default DataResult<Boolean> getBooleanValue(final T input) {
+        return getNumberValue(input).flatMap(number ->
+                DataResult.success(number.intValue() != 0)
+        );
+    }
 
     T createBoolean(final boolean value);
 
